@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{08C6BEA3-C546-4CE4-A920-0F6BC8674BF8}</ProjectGuid>
+    <ProjectGuid>{DCBA95EF-B2E2-419E-B59D-9753E6F66E6B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>HWC11</RootNamespace>
+    <RootNamespace>HWC11_C12</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -85,7 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BinarySearchTree.cpp" />
-    <ClCompile Include="HW.C1.1.cpp" />
+    <ClCompile Include="HW.C1.1_C1.2.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

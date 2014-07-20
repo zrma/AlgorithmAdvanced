@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-
 #define NOT_A_NUMBER	INT_MAX
 
 struct Node
@@ -20,10 +19,15 @@ public:
 	Node*	Search( int key );
 	void	DestroyTree();
 
-private:
-	void	Insert( int key, Node *leaf );
-	Node*	Search( int key, Node *leaf );
-	void	DestroyTree( Node *leaf );
+	int		NodeCount();
+	void	BreadthFirstSearch();
 
+private:
+	void	Insert( int key, Node *node );
+	Node*	Search( int key, Node *node );
+	void	DestroyTree( Node *node );
+
+	int		NodeCount( Node *node );
+	
 	Node*	m_Root = nullptr;
 };

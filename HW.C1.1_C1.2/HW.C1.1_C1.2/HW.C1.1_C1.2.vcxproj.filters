@@ -32,10 +32,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="HW.C1.1.cpp">
+    <ClCompile Include="BinarySearchTree.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="BinarySearchTree.cpp">
+    <ClCompile Include="HW.C1.1_C1.2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
