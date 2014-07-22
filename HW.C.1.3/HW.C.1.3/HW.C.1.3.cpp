@@ -13,48 +13,22 @@ int FiboByRecursion( int n );
 int FiboByTopDown( int n, int* array );
 int FiboByBottomUp( int n );
 
-int _tmain(int argc, _TCHAR* argv[])
+int _tmain( int argc, _TCHAR* argv[] )
 {
-	std::chrono::system_clock::time_point startTime = std::chrono::system_clock::now();
-	std::chrono::system_clock::time_point endTime = std::chrono::system_clock::now();
-
-	std::chrono::nanoseconds deltaTime = endTime - startTime;
-
-	printf_s( "Initialize... (%lldns) \n", deltaTime.count() );
-	printf_s( "Press Any Key... \n" );
-	getchar();
-
-	startTime = std::chrono::system_clock::now();
-	printf_s( "Recursion Fibo(%d) : %d ", TEST_NUMBER, FiboByRecursion( TEST_NUMBER ) );
-	endTime = std::chrono::system_clock::now();
-	deltaTime = endTime - startTime;
-	printf_s( "(%lldns) \n", deltaTime.count() );
-
-	printf_s( "Press Any Key... \n" );
-	getchar();
-
-	int* array = new int[TEST_NUMBER + 1];
-	memset( array, NOT_A_NUMBER, sizeof( int )*( TEST_NUMBER + 1 ) );
+	printf_s( "Recursion Fibo(%d) : %d \n", TEST_NUMBER, FiboByRecursion( TEST_NUMBER ) );
 	
-	startTime = std::chrono::system_clock::now();
-	printf_s( "Top Down  Fibo(%d) : %d ", TEST_NUMBER, FiboByTopDown( TEST_NUMBER, array ) );
-	endTime = std::chrono::system_clock::now();
-	deltaTime = endTime - startTime;
-	printf_s( "(%lldns) \n", deltaTime.count() );
-
+	int* array = new int[TEST_NUMBER + 1];
+	
+	memset( array, NOT_A_NUMBER, sizeof( int )*( TEST_NUMBER + 1 ) );
+	printf_s( "Top Down  Fibo(%d) : %d \n", TEST_NUMBER, FiboByTopDown( TEST_NUMBER, array ) );
+	
 	delete[] array;
 
+	printf_s( "Bottom Up Fibo(%d) : %d \n", TEST_NUMBER, FiboByBottomUp( TEST_NUMBER ) );
+	
 	printf_s( "Press Any Key... \n" );
 	getchar();
 
-	startTime = std::chrono::system_clock::now();
-	printf_s( "Bottom Up Fibo(%d) : %d ", TEST_NUMBER, FiboByBottomUp( TEST_NUMBER ) );
-	endTime = std::chrono::system_clock::now();
-	deltaTime = endTime - startTime;
-	printf_s( "(%lldns) \n", deltaTime.count() );
-
-	printf_s( "Press Any Key... \n" );
-	getchar();
 	return 0;
 }
 
