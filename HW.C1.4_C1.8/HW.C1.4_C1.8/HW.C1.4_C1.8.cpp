@@ -18,12 +18,18 @@ int CuttingRodRecursive( int* valueTable, int totalLen );
 int CuttingRodTopDown( int* valueTable, int totalLen );
 int CuttingRodTopDownRecursive( int* valueTable, int totalLen, int* memoryTable );
 
+int CuttingRodBottomUp( int* valueTable, int totalLen );
+
+void CuttingRodBottomUpPrint( int* valueTable, int totalLen );
+int CuttingRodMakeCutPosition( int* valueTable, int totalLen, int *cuttingPosTable);
+void PrintCutPosition( int *cuttingPosTable, int totalLen );
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	_CrtSetDbgFlag( _CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF );
 
 	// 배열 계산을 편하게 하기 위해 valueTable[0] = 0 으로 해 둠
-	int valueTable[] = { 0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30 };
+	int valueTable[] = { 0, 1, 5, 8, 9, 10, 17, 17, 20, 24, 30, 33, 34, 35, 37, 41 };
 
 	// 길이는 배열 크기 - 1
 	int totalLen = sizeof( valueTable ) / sizeof( int ) - 1;
@@ -42,12 +48,25 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf_s( "Top Down - Max Value = %d \n", CuttingRodTopDown( valueTable, totalLen ) );
 	printf_s( "Press Any Key... \n" );
 	getchar();
+
+	printf_s( "Bottom Up - Max Value = %d \n", CuttingRodBottomUp( valueTable, totalLen ) );
+	printf_s( "Press Any Key... \n" );
+	getchar();
+
+	CuttingRodBottomUpPrint( valueTable, totalLen );
+	printf_s( "Press Any Key... \n" );
+	getchar();
 	
 	return 0;
 }
 
 int CuttingRodWithCombination( int* valueTable, int totalLen )
 {
+	if ( totalLen == 0 )
+	{
+		return 0;
+	}
+
 	int maxValue = 0;
 
 	// isCutTable은 어디를 자를지 위치를 정하는 배열이다.
@@ -197,3 +216,116 @@ int CuttingRodTopDownRecursive( int* valueTable, int totalLen, int* memoryTable 
 	return maxValue;
 }
 
+int CuttingRodBottomUp( int* valueTable, int totalLen )
+{
+	if ( totalLen == 0 )
+	{
+		return 0;
+	}
+
+	int* memoryTable = new int[totalLen + 1];
+	ZeroMemory( memoryTable, sizeof( int ) * ( totalLen + 1 ) );
+
+	// 총 길이를 1부터 totalLen까지 돌면서 처리
+	for ( int len = 1; len <= totalLen; ++len )
+	{
+		int pieceMaxValue = -1;
+
+		// 왼쪽을 1부터 잘라서 좌측과 우측 값을 비교 - 최대값을 찾아냄
+		for ( int leftPieceLen = 1; leftPieceLen <= len; ++leftPieceLen )
+		{
+			pieceMaxValue = __max( pieceMaxValue, valueTable[leftPieceLen] + memoryTable[len - leftPieceLen] );
+		}
+
+		// 찾아진 최대값을 이번 length의 메모리 배열에 넣어둠 - 다음 for loop에 재활용 된다
+		memoryTable[len] = pieceMaxValue;
+	}
+
+	int maxValue = memoryTable[totalLen];
+
+	if ( memoryTable )
+	{
+		delete[] memoryTable;
+		memoryTable = nullptr;
+	}
+
+	return maxValue;
+}
+
+void CuttingRodBottomUpPrint( int* valueTable, int totalLen )
+{
+	if ( totalLen == 0 )
+	{
+		return;
+	}
+
+	int* cuttingPosTable = new int[totalLen + 1];
+	ZeroMemory( cuttingPosTable, sizeof( int ) * ( totalLen + 1 ) );
+
+	int maxValue = CuttingRodMakeCutPosition( valueTable, totalLen, cuttingPosTable );
+	PrintCutPosition( cuttingPosTable, totalLen );
+
+	if ( cuttingPosTable )
+	{
+		delete[] cuttingPosTable;
+		cuttingPosTable = nullptr;
+	}
+
+	printf_s( "For Print - Max Value = %d \n", maxValue );
+}
+
+int CuttingRodMakeCutPosition( int* valueTable, int totalLen, int *cuttingPosTable )
+{
+	if ( totalLen == 0 )
+	{
+		return 0;
+	}
+
+	int* memoryTable = new int[totalLen + 1];
+	ZeroMemory( memoryTable, sizeof( int ) * ( totalLen + 1 ) );
+
+	for ( int len = 1; len <= totalLen; ++len )
+	{
+		int pieceMaxValue = -1;
+		
+		for ( int leftPieceLen = 1; leftPieceLen <= len; ++leftPieceLen )
+		{
+			int pieceValue = valueTable[leftPieceLen] + memoryTable[len - leftPieceLen];
+
+			if ( pieceValue > pieceMaxValue )
+			{
+				pieceMaxValue = pieceValue;
+				
+				// 최대값이 갱신 될 때마다, 자를 위치를 저장할 배열에
+				// 현재 길이 위치에 현재 위치가 최대값이 되도록 자를 첫번째 위치를 저장
+				//
+				// ex)
+				// 10 길이는 4 / 6[6은 다시 나뉜다 치고] 으로 잘라야 최대값 이라면 배열[10] = 4
+				// 
+				// 그렇다면 4 길이는 예를 들면 1 / 3으로 나뉜다면 배열[4] = 1
+				cuttingPosTable[len] = leftPieceLen;
+			}
+		}
+
+		memoryTable[len] = pieceMaxValue;
+	}
+	
+	int maxValue = memoryTable[totalLen];
+
+	if ( memoryTable )
+	{
+		delete[] memoryTable;
+		memoryTable = nullptr;
+	}
+
+	return maxValue;
+}
+
+void PrintCutPosition( int *cuttingPosTable, int totalLen )
+{
+	while ( totalLen > 0 )
+	{
+		printf_s( "Cut : %d \n", cuttingPosTable[totalLen] );
+		totalLen = totalLen - cuttingPosTable[totalLen];
+	}
+}
