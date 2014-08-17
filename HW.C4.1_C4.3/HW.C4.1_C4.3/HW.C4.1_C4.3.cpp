@@ -15,6 +15,8 @@ int ActivitySelectionProblemRecursion( Activity* acts, int startId, int endId, i
 
 int ActivitySelectionProblemRecursiveGreedy( Activity* acts, int count, int firstId, int endTimeOfLastAdded );
 
+int ActivitySelectionProblemIterativeGreedy( Activity* acts, int count );
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 	Activity acts[] =
@@ -33,7 +35,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	};
 
 	int startId = 0;
-	int endId = sizeof( acts ) / sizeof( Activity );
+	int count = sizeof( acts ) / sizeof( Activity );
+	int endId = count - 1;
 
 	int aspResult = ActivitySelectionProblemRecursion( acts, startId, endId, acts[startId].m_StartTime, acts[endId].m_EndTime );
 
@@ -42,9 +45,16 @@ int _tmain(int argc, _TCHAR* argv[])
 	printf_s( "Press Any Key... \n" );
 	getchar();
 
-	aspResult = ActivitySelectionProblemRecursiveGreedy( acts, endId, startId, 0 );
+	aspResult = ActivitySelectionProblemRecursiveGreedy( acts, count, startId, 0 );
 
 	printf_s( "Recursive Greedy -> ASP : %d \n", aspResult );
+
+	printf_s( "Press Any Key... \n" );
+	getchar();
+
+	aspResult = ActivitySelectionProblemIterativeGreedy( acts, count );
+
+	printf_s( "Iterative Greedy -> ASP : %d \n", aspResult );
 
 	printf_s( "Press Any Key... \n" );
 	getchar();
@@ -68,7 +78,7 @@ int ActivitySelectionProblemRecursion( Activity* acts, int startId, int endId, i
 	{
 		// 이 액티비티를 주어진 시간 간격 이내에 넣을 수 있는가?
 		//
-		// startTime <= acts[현재놈].m_StartTime < acts[현재놈].m_EndTime <= endTime
+		// startTime <= acts[현재녀석].m_StartTime < acts[현재녀석].m_EndTime <= endTime
 		//
 		// 이러면 넣을 수 있는 거다.
 		if ( acts[startId].m_StartTime >= startTime && acts[startId].m_EndTime <= endTime )
@@ -114,6 +124,8 @@ int ActivitySelectionProblemRecursiveGreedy( Activity* acts, int count, int firs
 
 	int nextId = firstId;
 
+	// 직전 추가 된 Activity의 종료 시점보다 빠르게 시작하는 것은 걷어낸다.
+	// 즉 겹치는 건 걷어낸다.
 	while ( nextId < count && acts[nextId].m_StartTime < endTimeOfLastAdded )
 	{
 		++nextId;
@@ -121,10 +133,47 @@ int ActivitySelectionProblemRecursiveGreedy( Activity* acts, int count, int firs
 
 	if ( nextId == count )
 	{
+		// 더 이상 추가할 수가 없다!
 		return 0;
 	}
 	else
 	{
+		// 현재 액티비티를 1개 더하고, 나머지 최적해를 구하자.
 		return ( 1 + ActivitySelectionProblemRecursiveGreedy( acts, count, nextId + 1, acts[nextId].m_EndTime ) );
 	}
 }
+
+int ActivitySelectionProblemIterativeGreedy( Activity* acts, int count )
+{
+	// 방어 코드
+	if ( count <= 0 )
+	{
+		return 0;
+	}
+
+	// 가장 앞의 것 하나를 카운트 하고 들어가자
+	int maxNum = 1;
+
+	// 직전에 추가 된 Activity
+	int lastInsertedActionId = 0;
+
+	// 가장 앞의 것 하나는 채워져 있고, 앞에서부터 채워 나가는거다.
+	for ( int i = 1; i < count; ++i )
+	{
+		// 이전 액션의 종료시점 이후에 들어갈 수 있는 가장 빠른 것을 뽑아보자.
+		if ( acts[i].m_StartTime >= acts[lastInsertedActionId].m_EndTime )
+		{
+			// 집어 넣는다
+
+			// 개수 증가
+			++maxNum;
+
+			// 마지막으로 추가 된 Activity 번호 갱신
+			lastInsertedActionId = i;
+		}
+	}
+
+	return maxNum;
+}
+
+
