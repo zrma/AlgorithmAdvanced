@@ -63,8 +63,8 @@ int FiboByTopDown( int n, int* array )
 
 int FiboByBottomUp( int n )
 {
-	int* array = new int[TEST_NUMBER + 1];
-	ZeroMemory( array, sizeof(int) * (TEST_NUMBER + 1 ) );
+	int* array = new int[n + 1];
+	ZeroMemory( array, sizeof( int ) * ( n + 1 ) );
 
 	array[0] = 0;
 	array[1] = 1;
